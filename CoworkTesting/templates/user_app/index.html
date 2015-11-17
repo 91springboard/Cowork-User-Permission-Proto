@@ -1,0 +1,67 @@
+{% extends "user_app/base.html" %}
+
+{% load has_permission_filter %}
+
+{% block content%}
+
+<div class="row">
+    <div class="col-xs-10">
+        <div class="pull-right">
+            {% if user.is_authenticated %}
+                <p>Welcome, {{ user.username }}  <a href="{% url 'user_app:logout' %}">[logout]</a></p>
+            {% else %}
+                <p>Welcome, Guest <a href="{% url 'user_app:login' %}">[login]</a></p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="center-block">
+    <div class="col-xs-6 col-xs-offset-3">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Location</th>
+                        <th>Permission for User Model</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td scope="row">{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>
+                        {% for hub in user.coworkuser.hubs.all %}
+                            {{ hub.location }}
+                        {% endfor %}
+                        </td>
+                        <td class="allow">
+                            <span class={{ user|has_perm:'user_app.view_coworkuser' }}>
+                                View
+                            </span>
+                            |
+                            <span class={{ user|has_perm:'user_app.add_coworkuser' }}>
+                                Add
+                            </span>
+                            |
+                            <span class={{ user|has_perm:'user_app.change_coworkuser' }}>
+                                Change
+                            </span>
+                            |
+                            <span class={{ user|has_perm:'user_app.delete_coworkuser' }}>
+                                Delete
+                            </span>
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
