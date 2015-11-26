@@ -9,6 +9,11 @@
         <div class="pull-right">
             {% if user.is_authenticated %}
                 <p>Welcome, {{ user.username }}  <a href="{% url 'user_app:logout' %}">[logout]</a></p>
+                <p>Hub:
+                {% for hub in user.coworkuser.hubs.all %}
+                    {{ hub.location }}
+                {% endfor %}
+                </p>
             {% else %}
                 <p>Welcome, Guest <a href="{% url 'user_app:login' %}">[login]</a></p>
             {% endif %}
@@ -29,29 +34,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for user in users %}
+                    {% for u in users %}
                     <tr>
-                        <td scope="row">{{ user.id }}</td>
-                        <td>{{ user.username }}</td>
+                        <td scope="row">{{ u.id }}</td>
+                        <td>{{ u.username }}</td>
                         <td>
-                        {% for hub in user.coworkuser.hubs.all %}
+                        {% for hub in u.coworkuser.hubs.all %}
                             {{ hub.location }}
                         {% endfor %}
                         </td>
                         <td class="allow">
-                            <span class={{ user|has_perm:'user_app.view_coworkuser' }}>
+                            <span class={% has_location_perm user 'user_app.view_coworkuser' u %}>
                                 View
                             </span>
                             |
-                            <span class={{ user|has_perm:'user_app.add_coworkuser' }}>
+                             <span class={% has_location_perm user 'user_app.add_coworkuser' u %}>
                                 Add
                             </span>
                             |
-                            <span class={{ user|has_perm:'user_app.change_coworkuser' }}>
-                                Change
+                             <span class={% has_location_perm user 'user_app.edit_coworkuser' u %}>
+                                Update
                             </span>
                             |
-                            <span class={{ user|has_perm:'user_app.delete_coworkuser' }}>
+                             <span class={% has_location_perm user 'user_app.delete_coworkuser' u %}>
                                 Delete
                             </span>
 
